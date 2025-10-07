@@ -171,28 +171,43 @@
         }
 
         .segment-content {
-            font-size: 11px;
+            font-size: 13px;
             font-weight: bold;
             color: white;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.5);
             text-align: center;
-            max-width: 80px;
-            line-height: 1.2;
+            line-height: 1.1;
             word-break: break-word;
-            transform: rotate(0deg);
+            white-space: nowrap;
+            overflow: visible;
         }
 
-        .wheel-pointer {
+
+
+        .wheel-center {
             position: absolute;
-            top: -10px;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 30px solid #e53e3e;
-            z-index: 10;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            font-size: 0;
+            line-height: 0;
+        }
+
+        .wheel-center img {
+            width: 130px;
+            height: 130px;
+            object-fit: contain;
+            display: block;
         }
 
         .participants-info {
@@ -272,13 +287,19 @@
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            0% { 
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+            50% { 
+                box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6), 0 0 30px rgba(118, 75, 162, 0.4);
+            }
+            100% { 
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
         }
 
         .spinning {
-            animation: pulse 0.5s infinite;
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.8), 0 0 40px rgba(118, 75, 162, 0.6) !important;
         }
 
         .status-message {
@@ -358,11 +379,13 @@
         </div>
 
         <div class="wheel-container">
-            <div class="wheel-pointer"></div>
             <div id="wheel" class="wheel">
                 <div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 18px; color: #666;">
                     Upload participants to start
                 </div>
+            </div>
+            <div class="wheel-center">
+                <img src="logo.png" alt="" onerror="this.style.display='none'">
             </div>
         </div>
 
@@ -500,23 +523,46 @@
 
             wheel.innerHTML = '';
             
-            // Display all participants on wheel
-            const segmentAngle = 360 / participants.length;
+            const numSegments = participants.length;
+            const segmentAngle = 360 / numSegments;
 
             participants.forEach((participant, index) => {
                 const segment = document.createElement('div');
                 segment.className = 'wheel-segment';
                 
                 const rotation = index * segmentAngle;
-                segment.style.transform = `rotate(${rotation}deg)`;
-                segment.style.clipPath = `polygon(50% 50%, 
-                    ${50 + 50 * Math.cos((rotation - 90) * Math.PI / 180)}% ${50 + 50 * Math.sin((rotation - 90) * Math.PI / 180)}%, 
-                    ${50 + 50 * Math.cos((rotation + segmentAngle - 90) * Math.PI / 180)}% ${50 + 50 * Math.sin((rotation + segmentAngle - 90) * Math.PI / 180)}%)`;
+                const nextRotation = (index + 1) * segmentAngle;
+                
+                // Calculate polygon points for pie slice
+                const startAngle = rotation - 90;
+                const endAngle = nextRotation - 90;
+                
+                const x1 = 50 + 50 * Math.cos(startAngle * Math.PI / 180);
+                const y1 = 50 + 50 * Math.sin(startAngle * Math.PI / 180);
+                const x2 = 50 + 50 * Math.cos(endAngle * Math.PI / 180);
+                const y2 = 50 + 50 * Math.sin(endAngle * Math.PI / 180);
+                
+                segment.style.clipPath = `polygon(50% 50%, ${x1}% ${y1}%, ${x2}% ${y2}%)`;
                 segment.style.backgroundColor = colors[index % colors.length];
                 
+                // Position text in the middle of the segment
                 const content = document.createElement('div');
                 content.className = 'segment-content';
-                content.style.transform = `rotate(${segmentAngle / 2}deg)`;
+                
+                // Calculate position for text - further from center
+                const middleAngle = (startAngle + endAngle) / 2;
+                const textRotation = middleAngle + 90;
+                const distance = 75; // Distance from center (%) - increased from 65
+                
+                const textX = 50 + distance * Math.cos(middleAngle * Math.PI / 180);
+                const textY = 50 + distance * Math.sin(middleAngle * Math.PI / 180);
+                
+                content.style.position = 'absolute';
+                content.style.left = textX + '%';
+                content.style.top = textY + '%';
+                content.style.transform = `translate(-50%, -50%) rotate(${textRotation}deg)`;
+                content.style.width = 'auto';
+                content.style.maxWidth = '120px';
                 content.textContent = participant.displayText;
                 
                 segment.appendChild(content);
