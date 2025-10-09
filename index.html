@@ -405,6 +405,7 @@
                 <label for="winnerCount">Winners per spin:</label>
                 <select id="winnerCount">
                     <option value="1">1 Winner</option>
+                    <option value="5">5 Winners</option>
                     <option value="10">10 Winners</option>
                 </select>
             </div>
@@ -455,15 +456,18 @@
         let usedParticipants = [];
         
         let prizes = [
-            { name: 'Samsung Smartphone', count: 5 },
-            { name: 'Samsung Tablet I', count: 5 },
-            { name: 'Galaxy Buds Pro 3', count: 5 },
-            { name: 'Galaxy Watch', count: 5 },
-            { name: 'Samsung Tablet II', count: 10 },
+            { name: 'Smartphone Samsung A05s', count: 5 },
+            { name: 'Samsung Tab A9+', count: 5 },
+            { name: 'Galaxy Bud Pro 3', count: 5 },
+            { name: 'Galaxy Watch 7', count: 5 },
+            { name: 'Samsung Tab S10 FE', count: 10 },
             { name: 'iPad', count: 3 },
-            { name: 'Samsung Tablet III', count: 1 },
-            { name: 'Smart Watch II', count: 4 },
-            { name: 'Oppo Smartphone', count: 2 }
+            { name: 'Samsung Tab A8', count: 1 },
+            { name: 'Smartwatch Lenovo S2 PRO', count: 2 },
+            { name: 'Galaxy Watch 4', count: 2 },
+            { name: 'Smartphone Oppo A18', count: 2 },
+            { name: 'Swiss Military DOM Watch', count: 3 },
+            { name: 'Smartphone Redmi 13C', count: 2 }
         ];
         
         let remainingPrizes = [];
