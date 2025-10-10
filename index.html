@@ -710,10 +710,9 @@
                     usedParticipants.push(shuffledAvailable[i]);
                 }
 
+                totalWinnersCount += winners.length;
                 displayWinners(winners);
                 updatePrizesDisplay();
-                
-                totalWinnersCount += winners.length;
                 
                 isSpinning = false;
                 spinBtn.disabled = false;
