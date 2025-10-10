@@ -307,7 +307,8 @@
         .winner-card .participant-name {
             flex: 1;
             color: #2d3748;
-            font-weight: 500;
+            font-weight: bold;
+            font-size: 1.05em;
         }
 
         .winner-card .prize-name {
@@ -454,6 +455,7 @@
         let participants = [];
         let isSpinning = false;
         let usedParticipants = [];
+        let totalWinnersCount = 0;
         
         let prizes = [
             { name: 'Smartphone Samsung A05s', count: 5 },
@@ -567,6 +569,7 @@
 
                     participants = [];
                     usedParticipants = [];
+                    totalWinnersCount = 0;
 
                     for (let i = 0; i < jsonData.length; i++) {
                         const row = jsonData[i];
@@ -710,6 +713,8 @@
                 displayWinners(winners);
                 updatePrizesDisplay();
                 
+                totalWinnersCount += winners.length;
+                
                 isSpinning = false;
                 spinBtn.disabled = false;
                 wheel.classList.remove('spinning');
@@ -731,8 +736,10 @@
                 winnerCard.className = 'winner-card';
                 winnerCard.style.animationDelay = `${index * 0.1}s`;
                 
+                const winnerNumber = totalWinnersCount - winners.length + index + 1;
+                
                 winnerCard.innerHTML = `
-                    <span class="winner-number">🏆 Winner ${index + 1}:</span>
+                    <span class="winner-number">🏆 Winner ${winnerNumber}:</span>
                     <span class="participant-name">${winnerObj.participant.displayText}</span>
                     <span class="prize-name">🎁 ${winnerObj.prize}</span>
                 `;
@@ -744,6 +751,7 @@
         function resetWinners() {
             if (confirm('Are you sure you want to reset all winners?\n\nThis will:\n✓ Clear all previous winners\n✓ Allow everyone to participate again\n✓ Restore all prizes')) {
                 usedParticipants = [];
+                totalWinnersCount = 0;
                 winnersDisplay.innerHTML = '<p>🎲 Spin the wheel to see winners here!</p>';
                 winnersDisplay.classList.add('empty-state');
                 resetBtn.disabled = true;
